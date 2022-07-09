@@ -23,7 +23,16 @@ app.use(express.json());
 //recalls the rows from the table in the db as requested
 //wraps function in get request to /api/candidates
 app.get('/api/candidates', (req, res) => {
-    const sql = `SELECT * FROM candidates`;
+    //select all values from the candidates table 
+    //select property wished to be joined from table 2
+    //save wildcard as party_name
+    //Join party_name from table 2
+    //sets value to the parties.id from table 2
+    const sql = `SELECT candidates.*, parties.name
+        AS party_name
+        FROM candidates
+        LEFT JOIN parties
+        ON candidates.party_id = parties.id`;
 
     db.query(sql, (err, rows) => {
         if (err) {
@@ -40,7 +49,12 @@ app.get('/api/candidates', (req, res) => {
 
 //GET single candidate
 app.get('/api/candidate/:id', (req, res) => {
-    const sql = `SELECT * FROM candidates WHERE id = ?`;
+    const sql = `SELECT candidates.*, parties.name
+        AS party_name
+        FROM candidates
+        LEFT JOIN parties
+        ON candidates.party_id = parties.id
+        WHERE candidates.id = ?`;
     //searches uses id value from the request object
     const params = [req.params.id];
 
